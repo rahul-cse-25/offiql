@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:offiql/Utils/sizes.dart';
 
@@ -10,24 +9,21 @@ class OffiqlCustomizeStyle {
   OffiqlCustomizeStyle()
       : sizes = OffiqlSizes(constraints: null, orientation: null);
 
-  OffiqlCustomizeStyle.init(
-      BoxConstraints constraints, Orientation orientation)
+  OffiqlCustomizeStyle.init(BoxConstraints constraints, Orientation orientation)
       : sizes = OffiqlSizes(constraints: constraints, orientation: orientation);
-
-
 
   // Text Styles
   Text offiqlHeader(
-      String text, {
-        int? maxLinesOfText,
-        Color? textColor,
-        double? fontSize,
-        TextOverflow? onOverFlow,
-        TextAlign? textAlign,
-        TextStyle? textStyle,
-        FontWeight? fontWeight2,
-        bool isLevelTwo = false,
-      }) {
+    String text, {
+    int? maxLinesOfText,
+    Color? textColor,
+    double? fontSize,
+    TextOverflow? onOverFlow,
+    TextAlign? textAlign,
+    TextStyle? textStyle,
+    FontWeight? fontWeight2,
+    bool isLevelTwo = false,
+  }) {
     return Text(
       text,
       maxLines: maxLinesOfText,
@@ -41,11 +37,11 @@ class OffiqlCustomizeStyle {
 
   Text offiqlSubHeader(String text,
       {int? maxLinesOfText,
-        Color? textColor,
-        double? fontSize,
-        TextOverflow? onOverFlow,
-        TextAlign? textAlign,
-        TextStyle? textStyle}) {
+      Color? textColor,
+      double? fontSize,
+      TextOverflow? onOverFlow,
+      TextAlign? textAlign,
+      TextStyle? textStyle}) {
     return Text(
       text,
       // maxLines: maxLinesOfText ?? 1,
@@ -97,9 +93,9 @@ class OffiqlCustomizeStyle {
 
   Image offiqlImage(String imagePath,
       {double? widthInPercent,
-        Key? imageKey,
-        double? heightInPercent,
-        BoxFit? fitting}) {
+      Key? imageKey,
+      double? heightInPercent,
+      BoxFit? fitting}) {
     return Image.asset(
       key: imageKey,
       imagePath,
@@ -143,9 +139,9 @@ class OffiqlCustomizeStyle {
           ),
           minimumSize: widthInPercent != null
               ? Size(
-            sizes.horizontalBlockSize * widthInPercent,
-            sizes.verticalBlockSize * (heightInPercent ?? 6.5),
-          )
+                  sizes.horizontalBlockSize * widthInPercent,
+                  sizes.verticalBlockSize * (heightInPercent ?? 6.5),
+                )
               : null,
         ),
         onPressed: onPressed,
@@ -156,11 +152,11 @@ class OffiqlCustomizeStyle {
 
 // Icon Styles
   IconButton offiqlIconButton(
-      IconData iconData, {
-        required VoidCallback onPressed, // Click functionality
-        Color? color,
-        double? sizeOfIcon,
-      }) {
+    IconData iconData, {
+    required VoidCallback onPressed, // Click functionality
+    Color? color,
+    double? sizeOfIcon,
+  }) {
     return IconButton(
       icon: offiqlIcon(
         iconData,
@@ -183,7 +179,7 @@ class OffiqlCustomizeStyle {
     return SizedBox(
       height: sizes.getVerticalGapSize(
           verticalGapSizeInPercent:
-          verticalGapSizeInPercent ?? sizes.verticalBlockSize),
+              verticalGapSizeInPercent ?? sizes.verticalBlockSize),
     );
   }
 
@@ -197,13 +193,13 @@ class OffiqlCustomizeStyle {
     return SizedBox(
       width: sizes.getHorizontalGapSize(
           horizontalGapSizeInPercent:
-          horizontalGapSizeInPercent ?? sizes.horizontalBlockSize),
+              horizontalGapSizeInPercent ?? sizes.horizontalBlockSize),
     );
   }
 
   Widget offiqlGapSize(
       {required double horizontalGapSizeInPercent,
-        required double verticalGapSizeInPercent}) {
+      required double verticalGapSizeInPercent}) {
     return SizedBox(
       width: sizes.getHorizontalGapSize(
           horizontalGapSizeInPercent: horizontalGapSizeInPercent),
@@ -217,16 +213,6 @@ class OffiqlCustomizeStyle {
     return EdgeInsets.symmetric(
         horizontal: sizes.horizontalBlockSize * (hor ?? 4),
         vertical: sizes.horizontalBlockSize * (ver ?? 2));
-  }
-
-
-  EdgeInsets chatScreenBottomNavPadding() {
-    return EdgeInsets.only(
-      top: sizes.horizontalBlockSize * 3,
-      left: sizes.horizontalBlockSize * 4,
-      right: sizes.horizontalBlockSize * 4,
-      bottom: sizes.horizontalBlockSize * 3,
-    );
   }
 
   // Margin of all screen
@@ -289,38 +275,38 @@ class OffiqlCustomizeStyle {
       decoration: InputDecoration(
         prefixIcon: prefixIcon != null
             ? IconButton(
-          onPressed: onPrefixIconPressed,
-          icon: offiqlIcon(
-            prefixIcon,
-            sizeOfIcon: 3.0 * sizes.textMultiplier,
-            color: colorPrefix,
-          ),
-        )
+                onPressed: onPrefixIconPressed,
+                icon: offiqlIcon(
+                  prefixIcon,
+                  sizeOfIcon: 3.0 * sizes.textMultiplier,
+                  color: colorPrefix,
+                ),
+              )
             : null,
         suffixIcon: suffixIcon != null || suffixIcon2 != null
             ? Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (suffixIcon != null)
-              IconButton(
-                onPressed: onSuffixIconPressed,
-                icon: offiqlIcon(
-                  suffixIcon,
-                  sizeOfIcon: 3.0 * sizes.textMultiplier,
-                  color: colorSuffix,
-                ),
-              ),
-            if (suffixIcon2 != null)
-              IconButton(
-                onPressed: onSuffixIcon2Pressed,
-                icon: offiqlIcon(
-                  suffixIcon2,
-                  sizeOfIcon: 3.0 * sizes.textMultiplier,
-                  color: colorSuffix2,
-                ),
-              ),
-          ],
-        )
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (suffixIcon != null)
+                    IconButton(
+                      onPressed: onSuffixIconPressed,
+                      icon: offiqlIcon(
+                        suffixIcon,
+                        sizeOfIcon: 3.0 * sizes.textMultiplier,
+                        color: colorSuffix,
+                      ),
+                    ),
+                  if (suffixIcon2 != null)
+                    IconButton(
+                      onPressed: onSuffixIcon2Pressed,
+                      icon: offiqlIcon(
+                        suffixIcon2,
+                        sizeOfIcon: 3.0 * sizes.textMultiplier,
+                        color: colorSuffix2,
+                      ),
+                    ),
+                ],
+              )
             : null,
         alignLabelWithHint: true,
         labelText: labelText,
@@ -329,20 +315,19 @@ class OffiqlCustomizeStyle {
           color: hintColor ?? hintTextColor,
           fontSize: 16.0,
         ),
-        contentPadding: contentPadding
-            ?? offiqlTextFieldContainerPadding(),
+        contentPadding: contentPadding ?? offiqlTextFieldContainerPadding(),
         enabledBorder: OutlineInputBorder(
           borderRadius: offiqlTextFieldBorderRadius(),
           borderSide: outerBorder
               ? BorderSide(
-              color: unFocusColor ?? receiverBubbleDark, width: 1.5)
+                  color: unFocusColor ?? receiverBubbleDark, width: 1.5)
               : BorderSide.none,
         ),
         disabledBorder: OutlineInputBorder(
           borderRadius: offiqlTextFieldBorderRadius(),
           borderSide: outerBorder
               ? BorderSide(
-              color: unFocusColor ?? receiverBubbleDark, width: 1.5)
+                  color: unFocusColor ?? receiverBubbleDark, width: 1.5)
               : BorderSide.none,
         ),
         focusedBorder: OutlineInputBorder(
@@ -379,63 +364,5 @@ class OffiqlCustomizeStyle {
           color: iconColor,
           sizeOfIcon: iconSize,
         ));
-  }
-
-  Widget offiqlLoginSignUpTextField({
-    bool needSuffixIcon = false,
-    required TextEditingController controller,
-    VoidCallback Function(String text)? onChangedText,
-    VoidCallback? onSuffixIconPressed,
-    String? hintText,
-    String? labelText,
-    Color? colorSuffix,
-    bool obscureText = false,
-    String? helperText,
-    Color? helperColor,
-    Color? cursorColor,
-    Color? textColor,
-    int? helperMaxLines,
-    VoidCallback? onPrefixIconPressed,
-    IconData? prefixIcon,
-    Color? colorPrefix,
-    bool multiLine = false,
-  }) {
-    return Container(
-      padding: EdgeInsets.only(
-        left: sizes.horizontalBlockSize * 4,
-        right: sizes.horizontalBlockSize * 4,
-        bottom: helperText == null ? 0 : sizes.verticalBlockSize * 1.5,
-      ),
-      decoration: BoxDecoration(
-        borderRadius: offiqlTextFieldBorderRadius(),
-        border: Border.all(
-          color: greyColor,
-        ),
-      ),
-      child: offiqlTextField(
-        controller: controller,
-        labelText: labelText,
-        hintText: hintText,
-        cursorColor: cursorColor,
-        textColor: textColor,
-        obscureText: obscureText,
-        suffixIcon: needSuffixIcon
-            ? obscureText
-            ? Icons.visibility_off_outlined
-            : Icons.visibility_outlined
-            : null,
-        onSuffixIconPressed: onSuffixIconPressed,
-        colorSuffix: colorSuffix,
-        prefixIcon: prefixIcon,
-        onPrefixIconPressed: onPrefixIconPressed,
-        colorPrefix: colorPrefix,
-        multiLine: multiLine,
-        outerBorder: false,
-        focusOuterBorder: false,
-        helperText: helperText,
-        helperColor: helperColor,
-        helperMaxLines: helperMaxLines,
-      ),
-    );
   }
 }

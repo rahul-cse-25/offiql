@@ -1,8 +1,10 @@
+import 'package:offiql/Models/local_user.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
+import '../Utils/debug_purpose.dart';
+
 String userTable = "userTable";
-String addressTable = "addressTable";
 
 class DbHelper {
   static final DbHelper _instance = DbHelper._internal();
@@ -24,7 +26,7 @@ class DbHelper {
 
   Future<Database> _initDataBase() async {
     String dbPath = await getDatabasesPath(); //get the path to store
-    String filePath = join(dbPath);
+    String filePath = join(dbPath, "users.db");
 
     return await openDatabase(filePath,
         version: 1, onCreate: _onCreate, onConfigure: _onConfigure);
@@ -36,31 +38,38 @@ class DbHelper {
     CREATE TABLE $userTable(
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       name TEXT NOT NULL,
-      username TEXT NOT NULL,
       email TEXT NOT NULL,
-      phone TEXT NOT NULL,
-      website TEXT NOT NULL,
-      companyName TEXT NOT NULL,
-      catchPhrase TEXT NOT NULL,
-      bs TEXT NOT NULL
-    )
-    ''');
-
-    await db.execute('''
-    CREATE TABLE $addressTable(
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      street TEXT NOT NULL,
-      suite TEXT NOT NULL,
-      city TEXT NOT NULL,
-      zipcode TEXT NOT NULL,
-      lat DOUBLE NOT NULL,
-      lng DOUBLE NOT NULL,
-      FOREIGN KEY (userId) REFERENCES userTable(id) ON DELETE CASCADE
+      phone TEXT NOT NULL
+      
     )
     ''');
   }
 
   Future<void> _onConfigure(Database db) async {
     await db.execute('PRAGMA foreign_keys = ON');
+  }
+
+  Future<int> insertUser(LocalUserModel model) async {
+    final db = await dataBase;
+    try {
+      return await db.insert(userTable, model.toMap(),
+          conflictAlgorithm: ConflictAlgorithm.replace);
+    } catch (e) {
+      printRed("Error: $e");
+      rethrow;
+    }
+  }
+
+  Future<List<LocalUserModel>> getUsers() async {
+    final db = await dataBase;
+
+    try {
+      final List<Map<String, dynamic>> maps = await db.query(userTable);
+
+      return maps.map((user) => LocalUserModel.fromMap(user)).toList();
+    } catch (e) {
+      printRed("Error while getting the user: $e");
+      rethrow;
+    }
   }
 }

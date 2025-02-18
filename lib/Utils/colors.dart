@@ -7,12 +7,8 @@ const Color backGroundColorLight = Color(0xFFF2E6FF);
 const Color backGroundColorDark = Color(0xFF212529);
 const Color appNameColor = Color(0xff0d6244);
 
-const Color productCardDark = Color(0xFF2B2F33);
-List<Color> communityElevatedColor = [
-  Color(0xff02231c),
-  Colors.green,
-  Colors.greenAccent.withOpacity(0.9),
-];
+const Color cardDark = Color(0xFF2B2F33);
+
 
 const Color pureLightOrangeColor = Color(0xFF31181B);
 

@@ -2,11 +2,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:offiql/Extension/theme.dart';
+import 'package:offiql/Models/user_model.dart';
 
 import '../Utils/customize_style.dart';
 
 class UserDetailsScreen extends StatefulWidget {
-  const UserDetailsScreen({super.key});
+  final UserModel user;
+
+  const UserDetailsScreen({super.key, required this.user});
 
   @override
   State<UserDetailsScreen> createState() => _UserDetailsScreenState();
@@ -15,37 +18,17 @@ class UserDetailsScreen extends StatefulWidget {
 class _UserDetailsScreenState extends State<UserDetailsScreen> {
   OffiqlCustomizeStyle appStyle = OffiqlCustomizeStyle();
 
-  final Map<String, dynamic> userData = {
-    "id": 1,
-    "name": "Leanne Graham",
-    "username": "Bret",
-    "email": "Sincere@april.biz",
-    "address": {
-      "street": "Kulas Light",
-      "suite": "Apt. 556",
-      "city": "Gwenborough",
-      "zipcode": "92998-3874",
-      "geo": {"lat": "-37.3159", "lng": "81.1496"}
-    },
-    "phone": "1-770-736-8031 x56442",
-    "website": "hildegard.org",
-    "company": {
-      "name": "Romaguera-Crona",
-      "catchPhrase": "Multi-layered client-server neural-net",
-      "bs": "harness real-time e-markets"
-    }
-  };
-
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(
-        statusBarColor: context.backgroundColor,
+        statusBarColor: Colors.deepPurpleAccent,
         statusBarIconBrightness:
             context.isDarkMode ? Brightness.light : Brightness.dark,
       ),
     );
     return Scaffold(
+      backgroundColor: context.backgroundColor,
       appBar: AppBar(
         leading: GestureDetector(
           onTap: () {
@@ -64,63 +47,76 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
           ),
         ),
         centerTitle: true,
-        backgroundColor: context.backgroundColor,
+        backgroundColor: Colors.deepPurpleAccent,
         surfaceTintColor: Colors.transparent,
       ),
-      body: Stack(
+      body: Column(
         children: [
-          Container(
-            color: context.backgroundColor,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Container(
-                  width: appStyle.sizes.imageSizeMultiplier * 25,
-                  height: appStyle.sizes.imageSizeMultiplier * 25,
+          Stack(
+            children: [
+              Container(
+                height: appStyle.sizes.verticalBlockSize * 10,
+                margin: EdgeInsets.only(
+                    bottom: appStyle.sizes.verticalBlockSize * 8),
+                decoration: BoxDecoration(
+                  color: Colors.deepPurpleAccent,
+                ),
+              ),
+              Positioned(
+                bottom: 0,
+                left: 0,
+                right: 0,
+                child: Container(
+                  padding: appStyle.offiqlAllScreenPadding(ver: 2, hor: 2),
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    gradient: LinearGradient(
-                      colors: [
-                        Colors.purpleAccent,
-                        Colors.deepPurpleAccent,
-                        Colors.deepPurple,
-                      ],
-                      begin: Alignment.topRight,
-                      end: Alignment.bottomLeft,
-                    ),
+                    color: context.backgroundColor,
                   ),
-                  child: Center(
-                    child: Text(
-                      userData["name"][0],
-                      style: TextStyle(
-                          fontSize: appStyle.sizes.textMultiplier * 3.2,
-                          color: Colors.white),
+                  child: Container(
+                    width: appStyle.sizes.verticalBlockSize * 14,
+                    height: appStyle.sizes.verticalBlockSize * 14,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      gradient: LinearGradient(
+                        colors: [
+                          Colors.purpleAccent,
+                          Colors.deepPurpleAccent,
+                          Colors.deepPurple,
+                        ],
+                        begin: Alignment.topRight,
+                        end: Alignment.bottomLeft,
+                      ),
+                    ),
+                    child: Center(
+                      child: Text(
+                        widget.user.name[0],
+                        style: TextStyle(
+                            fontSize: appStyle.sizes.textMultiplier * 8.0,
+                            color: Colors.white),
+                      ),
                     ),
                   ),
                 ),
-                SizedBox(
-                    height: appStyle.sizes
-                        .getVerticalGapSize(verticalGapSizeInPercent: 2)),
-                Padding(
-                  padding: appStyle.offiqlAllScreenPadding(),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _buildUserInfo("Name", userData["name"]),
-                      _buildUserInfo("Username", userData["username"]),
-                      _buildUserInfo("Email", userData["email"]),
-                      _buildUserInfo("Phone", userData["phone"]),
-                      _buildUserInfo("Website", userData["website"]),
-                      Divider(),
-                      _buildUserInfo("Company", userData["company"]["name"]),
-                      _buildUserInfo(
-                          "Catchphrase", userData["company"]["catchPhrase"]),
-                      Divider(),
-                      _buildUserInfo("Address",
-                          "${userData["address"]["street"]}, ${userData["address"]["suite"]}, ${userData["address"]["city"]} - ${userData["address"]["zipcode"]}"),
-                    ],
-                  ),
-                ),
+              )
+            ],
+          ),
+          Padding(
+            padding: appStyle.offiqlAllScreenPadding(),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildUserInfo("Name", widget.user.name),
+                _buildUserInfo("Username", widget.user.username),
+                _buildUserInfo("Email", widget.user.email),
+                _buildUserInfo("Phone", widget.user.phone),
+                _buildUserInfo("Website", widget.user.website),
+                Divider(),
+                _buildUserInfo("Company", widget.user.company['name'] ?? ''),
+                _buildUserInfo(
+                    "Catchphrase", widget.user.company["catchPhrase"] ?? ''),
+                Divider(),
+                _buildUserInfo("Address",
+                    "${widget.user.address.street}, ${widget.user.address.suite}, ${widget.user.address.city} - ${widget.user.address.zipcode}"),
               ],
             ),
           ),

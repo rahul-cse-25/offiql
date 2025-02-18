@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:offiql/Extension/theme.dart';
+import 'package:offiql/Helper/tile_loader.dart';
+import 'package:offiql/Screens/add_users.dart';
+import 'package:offiql/Screens/local_user.dart';
+import 'package:offiql/Utils/colors.dart';
 import 'package:offiql/Utils/customize_style.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 
+import '../Models/user_model.dart';
 import '../Provider/home.dart';
-import '../Utils/debug_purpose.dart';
 import 'details_screen.dart';
 
 class HomeScreen extends StatefulWidget {
-
-
   const HomeScreen({
     super.key,
   });
@@ -26,33 +27,17 @@ class _HomeScreenState extends State<HomeScreen> {
   String profilePic = '';
   String userName = 'Kajal';
   String appName = "Offiql";
-  List<dynamic> users = [];
-  bool isLoading = true;
 
   @override
   void initState() {
+    // TODO: implement initState
     super.initState();
-    fetchUsers();
-  }
-
-  Future<void> fetchUsers() async {
-    try {
-      final response = await http
-          .get(Uri.parse('https://jsonplaceholder.typicode.com/users'));
-      if (response.statusCode == 200) {
-        setState(() {
-          users = json.decode(response.body);
-          isLoading = false; // Stop loading after fetching data
-        });
-      } else {
-        throw Exception('Failed to load users');
-      }
-    } catch (e) {
-      setState(() {
-        isLoading = false;
-      });
-      printRed("Error fetching users: $e");
-    }
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) {
+        final userProvider = HomeProvider();
+        userProvider.fetchUsers();
+      },
+    );
   }
 
   @override
@@ -180,10 +165,46 @@ class _HomeScreenState extends State<HomeScreen> {
                                         onCanceled: () =>
                                             menuProvider.toggleMenu(false),
                                         onSelected: (value) async {
-                                          if (value == "Profile") {
+                                          if (value == "Add Users") {
                                             menuProvider.toggleMenu(false);
-                                          } else if (value == "Settings") {
+                                            Navigator.push(
+                                              context,
+                                              PageRouteBuilder(
+                                                pageBuilder: (context,
+                                                    animation,
+                                                    secondaryAnimation) {
+                                                  return AddUsers();
+                                                },
+                                                transitionsBuilder: (context,
+                                                        animation,
+                                                        secondaryAnimation,
+                                                        child) =>
+                                                    FadeTransition(
+                                                  opacity: animation,
+                                                  child: child,
+                                                ),
+                                              ),
+                                            );
+                                          } else if (value == "Local Users") {
                                             menuProvider.toggleMenu(false);
+                                            Navigator.push(
+                                              context,
+                                              PageRouteBuilder(
+                                                pageBuilder: (context,
+                                                    animation,
+                                                    secondaryAnimation) {
+                                                  return LocalUser();
+                                                },
+                                                transitionsBuilder: (context,
+                                                        animation,
+                                                        secondaryAnimation,
+                                                        child) =>
+                                                    FadeTransition(
+                                                  opacity: animation,
+                                                  child: child,
+                                                ),
+                                              ),
+                                            );
                                           } else if (value == "Light" ||
                                               value == "Dark") {
                                             menuProvider.toggleMenu(false);
@@ -195,8 +216,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                             context.isDarkMode
                                                 ? "Light"
                                                 : "Dark",
-                                            "Profile",
-                                            "Settings",
+                                            "Add Users",
+                                            "Local Users",
                                           }.map((String popListChoice) {
                                             return PopupMenuItem<String>(
                                               padding: appStyle
@@ -209,10 +230,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                                     popListChoice == "Logout"
                                                         ? Icons.logout
                                                         : popListChoice ==
-                                                                "Settings"
-                                                            ? Icons.settings
+                                                                "Local Users"
+                                                            ? Icons.person
                                                             : popListChoice ==
-                                                                    "Profile"
+                                                                    "Add Users"
                                                                 ? Icons.person
                                                                 : context
                                                                         .isDarkMode
@@ -298,79 +319,137 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                             ),
                             Expanded(
-                              child: isLoading
-                                  ? Center(child: CircularProgressIndicator())
-                                  : users.isEmpty
-                                      ? Center(child: Text("No Users Found"))
-                                      : ListView.builder(
-                                          padding:
-                                              appStyle.offiqlAllScreenPadding(),
-                                          itemCount: users.length,
-                                          itemBuilder: (context, index) {
-                                            var user = users[index];
-                                            return Container(
-                                              padding: appStyle.offiqlAllScreenPadding(hor: 0),
-                                              margin: appStyle.offiqlAllScreenPadding(hor: 0),
-                                              decoration: BoxDecoration(
-                                                  color:
-                                                      context.backgroundColor,
-                                                  borderRadius:
-                                                      BorderRadius.circular(appStyle.sizes.textMultiplier*3.5),
-                                                  boxShadow: [
-                                                    BoxShadow(
-                                                      color: Colors.black
-                                                          .withOpacity(0.1),
-                                                      blurRadius: 8,
-                                                      offset: Offset(0, 2),
-                                                    )
-                                                  ]),
-                                              child: ListTile(
-                                                leading: CircleAvatar(
-                                                  backgroundColor:
-                                                      Colors.deepPurpleAccent,
-                                                  child: Text(user['name'][0],
-                                                      style: appStyle
-                                                          .subHeaderStyle(color: Colors.white
-                                                              )),
-                                                ),
-                                                title: Text(user['name'],
-                                                    style:
-                                                        appStyle.subHeaderStyle(size: appStyle.sizes.textMultiplier*1.8,
-                                                            color: context
-                                                                .textColor)),
-                                                subtitle: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text(user['email'],
-                                                        style: appStyle
-                                                            .subHeaderStyle(
-                                                                color:
-                                                                    Colors.grey[
-                                                                        700])),
-                                                    Text(user['phone'],
-                                                        style: appStyle
-                                                            .subHeaderStyle(
-                                                                color:
-                                                                    Colors.grey[
-                                                                        700])),
-                                                  ],
-                                                ),
-                                                trailing: appStyle.offiqlIcon(
-                                                    Icons.arrow_forward_ios,
-                                                    color: context.textColor),
-                                                onTap: () => Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        UserDetailsScreen(
-                                                            ),
-                                                  ),
-                                                ),
-                                              ),
-                                            );
-                                          },
+                              child: LiquidPullToRefresh(
+                                onRefresh: HomeProvider().fetchUsers,
+                                backgroundColor: Colors.white,
+                                showChildOpacityTransition: false,
+                                animSpeedFactor: 3.0,
+                                springAnimationDurationInMilliseconds: 500,
+                                color: context.isDarkMode
+                                    ? Colors.deepPurpleAccent
+                                    : Colors.deepPurple,
+                                height: appStyle.sizes.screenHeight * 0.1,
+                                child: Consumer<HomeProvider>(
+                                  builder: (context, home, child) {
+                                    if (home.isLoading) {
+                                      return Center(
+                                        child: ListShimmer(
+                                          itemCount: 5,
+                                          color: context.isDarkMode
+                                              ? cardDark
+                                              : Colors.grey,
                                         ),
+                                      );
+                                    }
+
+                                    return home.users.isEmpty
+                                        ? Center(
+                                            child: Text("No users data found"))
+                                        : ListView.builder(
+                                            padding: appStyle
+                                                .offiqlAllScreenPadding(),
+                                            itemCount: home.users.length,
+                                            itemBuilder: (context, index) {
+                                              UserModel user =
+                                                  home.users[index];
+                                              return Container(
+                                                padding: appStyle
+                                                    .offiqlAllScreenPadding(
+                                                        hor: 4),
+                                                margin: EdgeInsets.only(
+                                                    bottom: appStyle.sizes
+                                                            .horizontalBlockSize *
+                                                        2.5),
+                                                decoration: BoxDecoration(
+                                                    color:
+                                                        context.backgroundColor,
+                                                    borderRadius: BorderRadius
+                                                        .circular(appStyle.sizes
+                                                                .textMultiplier *
+                                                            3.5),
+                                                    boxShadow: [
+                                                      BoxShadow(
+                                                        color: context
+                                                                .isDarkMode
+                                                            ? Colors.black
+                                                                .withValues(
+                                                                    alpha: 0.15)
+                                                            : Colors.black12,
+                                                        blurRadius: 3,
+                                                        // offset: const Offset(0, 3),
+                                                      ),
+                                                    ]),
+                                                child: ListTile(
+                                                    contentPadding:
+                                                        EdgeInsets.zero,
+                                                    leading: CircleAvatar(
+                                                      backgroundColor: Colors
+                                                          .deepPurpleAccent,
+                                                      child: Text(user.name[0],
+                                                          style: appStyle
+                                                              .subHeaderStyle(
+                                                                  color: Colors
+                                                                      .white)),
+                                                    ),
+                                                    title: Text(user.name,
+                                                        style: appStyle
+                                                            .subHeaderStyle(
+                                                                size: appStyle
+                                                                        .sizes
+                                                                        .textMultiplier *
+                                                                    1.8,
+                                                                color: context
+                                                                    .textColor)),
+                                                    subtitle: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Text(user.email,
+                                                            style: appStyle
+                                                                .subHeaderStyle(
+                                                                    color: Colors
+                                                                            .grey[
+                                                                        700])),
+                                                        Text(user.phone,
+                                                            style: appStyle
+                                                                .subHeaderStyle(
+                                                                    color: Colors
+                                                                            .grey[
+                                                                        700])),
+                                                      ],
+                                                    ),
+                                                    trailing: appStyle.offiqlIcon(
+                                                        Icons.arrow_forward_ios,
+                                                        color:
+                                                            context.textColor),
+                                                    onTap: () => Navigator.push(
+                                                          context,
+                                                          PageRouteBuilder(
+                                                            pageBuilder: (context,
+                                                                animation,
+                                                                secondaryAnimation) {
+                                                              return UserDetailsScreen(
+                                                                user: user,
+                                                              );
+                                                            },
+                                                            transitionsBuilder: (context,
+                                                                    animation,
+                                                                    secondaryAnimation,
+                                                                    child) =>
+                                                                FadeTransition(
+                                                              opacity:
+                                                                  animation,
+                                                              child: child,
+                                                            ),
+                                                          ),
+                                                        )),
+                                              );
+                                            },
+                                          );
+                                  },
+                                ),
+                              ),
                             ),
                           ],
                         ),
@@ -414,9 +493,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Icon(
       Icons.menu,
       size: appStyle.sizes.textMultiplier * 3,
-      color: Colors.white,
+      color: Colors.grey,
     );
   }
 }
-
-
