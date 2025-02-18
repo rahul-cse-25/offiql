@@ -72,7 +72,7 @@ class UserProvider extends ChangeNotifier {
       contactController.clear();
       emailController.clear();
       // ignore: use_build_context_synchronously
-      Navigator.pop(context);
+      Navigator.popUntil(context, (route) => route.isFirst);
     } catch (e) {
       // ignore: use_build_context_synchronously
       showSnackBar("Something went wrong, Please try again.", context);

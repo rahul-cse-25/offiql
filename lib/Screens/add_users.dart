@@ -105,6 +105,7 @@ class AddUsers extends StatelessWidget {
                     appStyle.offiqlTextField(
                       controller: userProvider.contactController,
                       labelText: "Contact number (+91)(10 digit)",
+                      keyboardType: TextInputType.phone,
                       contentPadding: EdgeInsets.symmetric(
                         vertical: appStyle.sizes.verticalBlockSize * 2,
                         horizontal: appStyle.sizes.horizontalBlockSize * 2,
