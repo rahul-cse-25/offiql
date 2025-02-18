@@ -14,7 +14,9 @@ class UserProvider extends ChangeNotifier {
 
   bool? isCorrectContact;
   bool? isCorrectEmail;
-  bool isSubmitting = false;
+  bool _isSubmitting = false;
+
+  bool get isSubmitting => _isSubmitting;
 
   void validateEmail(String value) {
     isCorrectEmail = RegExp(emailPattern).hasMatch(value);
@@ -26,9 +28,13 @@ class UserProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  set isSubmitting(bool value) {
+    _isSubmitting = value;
+    notifyListeners();
+  }
+
   Future<void> handleSubmit(BuildContext context) async {
     if (isSubmitting) return;
-
     if (nameController.text.isEmpty ||
         contactController.text.isEmpty ||
         emailController.text.isEmpty) {
@@ -52,19 +58,23 @@ class UserProvider extends ChangeNotifier {
     }
     try {
       isSubmitting = true;
-      notifyListeners();
-
       await DbHelper().insertUser(LocalUserModel(
           email: emailController.text,
           name: nameController.text,
           phone: contactController.text));
+      isCorrectContact = null;
+      isCorrectEmail = null;
+      FocusManager.instance.primaryFocus?.unfocus();
+      // ignore: use_build_context_synchronously
       showSnackBar("Your details have been added successfully!", context,
           bgColor: Colors.deepPurpleAccent.shade200);
-
       nameController.clear();
       contactController.clear();
       emailController.clear();
+      // ignore: use_build_context_synchronously
+      Navigator.pop(context);
     } catch (e) {
+      // ignore: use_build_context_synchronously
       showSnackBar("Something went wrong, Please try again.", context);
     } finally {
       isSubmitting = false;

@@ -92,11 +92,13 @@ class AddUsers extends StatelessWidget {
                       cursorColor: context.textColor,
                       prefixIcon: Icons.email_outlined,
                       colorPrefix: Colors.deepPurpleAccent,
+                      suffixIcon: userProvider.isCorrectEmail != null &&
+                              userProvider.isCorrectEmail!
+                          ? Icons.check_circle_outline
+                          : null,
+                      colorSuffix: Colors.deepPurpleAccent,
                       onChangedText: (value) {
                         userProvider.validateEmail(value);
-                        if (userProvider.isCorrectEmail == true) {
-                          FocusManager.instance.primaryFocus?.nextFocus();
-                        }
                       },
                     ),
                     appStyle.offiqlVerticalGap(verticalGapSizeInPercent: 2.5),
@@ -113,6 +115,11 @@ class AddUsers extends StatelessWidget {
                       focusColor: Colors.grey.shade400,
                       prefixIcon: Icons.phone_outlined,
                       colorPrefix: Colors.deepPurpleAccent,
+                      suffixIcon: userProvider.isCorrectContact != null &&
+                              userProvider.isCorrectContact!
+                          ? Icons.check_circle_outline
+                          : null,
+                      colorSuffix: Colors.deepPurpleAccent,
                       onChangedText: (value) {
                         userProvider.validateContact(value);
                         if (userProvider.isCorrectContact == true) {
@@ -121,21 +128,24 @@ class AddUsers extends StatelessWidget {
                       },
                     ),
                     appStyle.offiqlVerticalGap(verticalGapSizeInPercent: 3.5),
-                    appStyle.offiqlElevatedButton(
-                      onPressed: () => userProvider.handleSubmit(context),
-                      widthInPercent: 100,
-                      heightInPercent: 6,
-                      backgroundColor: Colors.deepPurpleAccent,
-                      childOfButton: Text(
-                        "Submit",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: appStyle.sizes.textMultiplier * 2,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
                   ],
+                ),
+              ),
+            ),
+            bottomNavigationBar: Padding(
+              padding: appStyle.offiqlAllScreenPadding(),
+              child: appStyle.offiqlElevatedButton(
+                onPressed: () => userProvider.handleSubmit(context),
+                widthInPercent: 100,
+                heightInPercent: 6,
+                backgroundColor: Colors.deepPurpleAccent,
+                childOfButton: Text(
+                  userProvider.isSubmitting ? "Submitting..." : "Submit",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: appStyle.sizes.textMultiplier * 2,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),

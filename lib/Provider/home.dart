@@ -1,11 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-
-import '../Models/user_model.dart';
-
 import 'package:http/http.dart' as http;
 
+import '../Models/user_model.dart';
 import '../Utils/debug_purpose.dart';
 
 class HomeProvider extends ChangeNotifier {
@@ -18,14 +16,26 @@ class HomeProvider extends ChangeNotifier {
   HomeProvider._internal();
 
   List<UserModel> _users = [];
+  List<UserModel> _searchedUsers = [];
   bool _isLoading = false;
   bool _isMenuOpened = false;
+  bool _isSearching = false;
+  TextEditingController searchController = TextEditingController();
 
   List<UserModel> get users => _users;
+
+  bool get isSearching => _isSearching;
+
+  List<UserModel> get searchedUsers => _searchedUsers;
 
   bool get isLoading => _isLoading;
 
   bool get isMenuOpened => _isMenuOpened;
+
+  set isSearching(bool value) {
+    _isSearching = value;
+    notifyListeners();
+  }
 
   void toggleMenu(bool value) {
     _isMenuOpened = value;
@@ -39,6 +49,11 @@ class HomeProvider extends ChangeNotifier {
 
   set users(List<UserModel> userData) {
     _users = userData;
+    notifyListeners();
+  }
+
+  set searchedUsers(List<UserModel> userData) {
+    _searchedUsers = userData;
     notifyListeners();
   }
 
@@ -66,5 +81,16 @@ class HomeProvider extends ChangeNotifier {
     } finally {
       isLoading = false;
     }
+  }
+
+  void searchUsers(String query) {
+    _searchedUsers = _users
+        .where(
+          (user) =>
+              user.name.toLowerCase().contains(query.toLowerCase()) ||
+              user.email.toLowerCase().contains(query.toLowerCase()) ||
+              user.phone.toLowerCase().contains(query.toLowerCase()),
+        )
+        .toList();
   }
 }

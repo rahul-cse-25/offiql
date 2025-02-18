@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:offiql/Utils/sizes.dart';
 
 import 'colors.dart';
@@ -215,6 +216,20 @@ class OffiqlCustomizeStyle {
         vertical: sizes.horizontalBlockSize * (ver ?? 2));
   }
 
+  LottieBuilder offiqlLottieImage(String imagePath,
+      {double widthInPercent = 20, AnimationController? animationController}) {
+    return Lottie.asset(
+      imagePath,
+      width: sizes.horizontalBlockSize * widthInPercent,
+      fit: BoxFit.cover,
+      controller: animationController,
+      onLoaded: (composition) {
+        if (animationController != null) {
+          animationController.duration = composition.duration;
+        }
+      },
+    );
+  }
   // Margin of all screen
   EdgeInsets offiqlTextFieldContainerPadding() {
     return EdgeInsets.symmetric(

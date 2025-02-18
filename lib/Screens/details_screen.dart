@@ -1,8 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:offiql/Extension/theme.dart';
 import 'package:offiql/Models/user_model.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../Utils/customize_style.dart';
 
@@ -27,6 +27,7 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
             context.isDarkMode ? Brightness.light : Brightness.dark,
       ),
     );
+
     return Scaffold(
       backgroundColor: context.backgroundColor,
       appBar: AppBar(
@@ -35,7 +36,7 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
             Navigator.pop(context);
           },
           child: appStyle.offiqlIcon(Icons.arrow_back,
-              color: context.textColor,
+              color: Colors.white,
               sizeOfIcon: appStyle.sizes.textMultiplier * 3.0),
         ),
         title: Text(
@@ -43,7 +44,7 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
           style: appStyle.subHeaderStyle(
             size: appStyle.sizes.textMultiplier * 2.5,
             fontWeight: FontWeight.bold,
-            color: context.textColor,
+            color: Colors.white,
           ),
         ),
         centerTitle: true,
@@ -57,7 +58,7 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
               Container(
                 height: appStyle.sizes.verticalBlockSize * 10,
                 margin: EdgeInsets.only(
-                    bottom: appStyle.sizes.verticalBlockSize * 8),
+                    bottom: appStyle.sizes.verticalBlockSize * 7.5),
                 decoration: BoxDecoration(
                   color: Colors.deepPurpleAccent,
                 ),
@@ -67,7 +68,7 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                 left: 0,
                 right: 0,
                 child: Container(
-                  padding: appStyle.offiqlAllScreenPadding(ver: 2, hor: 2),
+                  padding: appStyle.offiqlAllScreenPadding(ver: 1, hor: 1),
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: context.backgroundColor,
@@ -77,11 +78,12 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                     height: appStyle.sizes.verticalBlockSize * 14,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
+                      color: Colors.deepPurpleAccent,
                       gradient: LinearGradient(
                         colors: [
-                          Colors.purpleAccent,
-                          Colors.deepPurpleAccent,
-                          Colors.deepPurple,
+                          // Colors.purpleAccent.shade400,
+                          Colors.deepPurple.shade600,
+                          Colors.deepPurpleAccent.shade200,
                         ],
                         begin: Alignment.topRight,
                         end: Alignment.bottomLeft,
@@ -89,7 +91,7 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                     ),
                     child: Center(
                       child: Text(
-                        widget.user.name[0],
+                        widget.user.name.substring(0, 1).toUpperCase(),
                         style: TextStyle(
                             fontSize: appStyle.sizes.textMultiplier * 8.0,
                             color: Colors.white),
@@ -100,24 +102,46 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
               )
             ],
           ),
-          Padding(
-            padding: appStyle.offiqlAllScreenPadding(),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildUserInfo("Name", widget.user.name),
-                _buildUserInfo("Username", widget.user.username),
-                _buildUserInfo("Email", widget.user.email),
-                _buildUserInfo("Phone", widget.user.phone),
-                _buildUserInfo("Website", widget.user.website),
-                Divider(),
-                _buildUserInfo("Company", widget.user.company['name'] ?? ''),
-                _buildUserInfo(
-                    "Catchphrase", widget.user.company["catchPhrase"] ?? ''),
-                Divider(),
-                _buildUserInfo("Address",
-                    "${widget.user.address.street}, ${widget.user.address.suite}, ${widget.user.address.city} - ${widget.user.address.zipcode}"),
-              ],
+          Align(
+            alignment: Alignment.center,
+            child: Shimmer.fromColors(
+              baseColor: Colors.deepPurpleAccent,
+              highlightColor: context.textColor,
+              period: Duration(seconds: 5),
+              child: Text(
+                widget.user.name,
+                style: appStyle.subHeaderStyle(
+                  size: appStyle.sizes.textMultiplier * 2.5,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.deepPurpleAccent,
+                ),
+              ),
+            ),
+          ),
+          Expanded(
+            child: Padding(
+              padding: appStyle.offiqlAllScreenPadding(),
+              child: SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // _buildUserInfo("Name", widget.user.name),
+                    _buildUserInfo("Username", widget.user.username,
+                        icon: Icons.person),
+                    _buildUserInfo("Email", widget.user.email, icon: Icons.email),
+                    _buildUserInfo("Phone", widget.user.phone, icon: Icons.phone),
+                    _buildUserInfo("Website", widget.user.website, icon: Icons.web),
+                    Divider(),
+                    _buildUserInfo("Company", widget.user.company['name'] ?? ''),
+                    _buildUserInfo(
+                        "Catchphrase", widget.user.company["catchPhrase"] ?? ''),
+                    Divider(),
+                    _buildUserInfo("Address",
+                        "${widget.user.address.street}, ${widget.user.address.suite}, ${widget.user.address.city} - ${widget.user.address.zipcode}"),
+                  ],
+                ),
+              ),
             ),
           ),
         ],
@@ -125,7 +149,7 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
     );
   }
 
-  Widget _buildUserInfo(String title, String value) {
+  Widget _buildUserInfo(String title, String value, {IconData? icon}) {
     return Padding(
       padding: appStyle.offiqlAllScreenPadding(hor: 1),
       child: Column(
@@ -134,17 +158,36 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
           Text(
             title,
             style: appStyle.subHeaderStyle(
-              size: appStyle.sizes.textMultiplier * 2.2,
+              size: appStyle.sizes.textMultiplier * 1.8,
               fontWeight: FontWeight.bold,
-              color: context.textColor,
+              color: Colors.grey,
             ),
           ),
-          Text(
-            value,
-            style: appStyle.subHeaderStyle(
-              size: appStyle.sizes.textMultiplier * 1.8,
-              color: context.textColor.withOpacity(0.7),
-            ),
+          Row(
+            spacing: appStyle.sizes.horizontalBlockSize * 1.5,
+            children: [
+              if (icon != null)
+                Container(
+                    padding: appStyle.offiqlAllScreenPadding(ver: 1, hor: 1),
+                    decoration: BoxDecoration(
+                        border: Border.all(
+                            width: 1, color: Colors.deepPurpleAccent.shade100),
+                        shape: BoxShape.circle),
+                    child: Icon(
+                      icon,
+                      color: Colors.deepPurpleAccent,
+                      size: appStyle.sizes.horizontalBlockSize * 4,
+                    )),
+              Expanded(
+                child: Text(
+                  value,
+                  style: appStyle.subHeaderStyle(
+                    size: appStyle.sizes.textMultiplier * 2,
+                    color: context.textColor,
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),

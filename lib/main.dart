@@ -4,7 +4,6 @@ import 'package:offiql/Provider/user.dart';
 import 'package:offiql/Screens/home_screen.dart';
 import 'package:provider/provider.dart';
 
-import 'Provider/home.dart';
 import 'Provider/theme.dart';
 
 void main() {

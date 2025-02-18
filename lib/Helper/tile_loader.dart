@@ -58,8 +58,8 @@ class _ListShimmerState extends State<ListShimmer>
             child: Container(
               margin: EdgeInsets.only(
                   bottom: appStyle.sizes.horizontalBlockSize * 2,
-                  left: appStyle.sizes.horizontalBlockSize * 2,
-                  right: appStyle.sizes.horizontalBlockSize * 2),
+                  left: appStyle.sizes.horizontalBlockSize * 4,
+                  right: appStyle.sizes.horizontalBlockSize * 4),
               padding: appStyle.offiqlAllScreenPadding(ver: 4),
               decoration: BoxDecoration(
                   border: Border.all(
@@ -98,6 +98,15 @@ class _ListShimmerState extends State<ListShimmer>
                             Container(
                               height: appStyle.sizes.horizontalBlockSize * 2,
                               width: constraints.maxWidth * 0.5,
+                              decoration: BoxDecoration(
+                                color: widget.color.withValues(alpha: 0.5),
+                                borderRadius: BorderRadius.circular(
+                                    appStyle.sizes.horizontalBlockSize * 0.8),
+                              ),
+                            ),
+                            Container(
+                              height: appStyle.sizes.horizontalBlockSize * 2,
+                              width: constraints.maxWidth * 0.6,
                               decoration: BoxDecoration(
                                 color: widget.color.withValues(alpha: 0.5),
                                 borderRadius: BorderRadius.circular(
